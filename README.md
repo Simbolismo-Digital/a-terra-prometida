@@ -12,6 +12,19 @@ Para prosseguir com este projeto nós assumimos que você tenha instalado:
   * Docker Desktop
   * Mix (Elixir)
 
+### Video Room
+#### Mac OS X
+
+```
+brew install srtp libnice clang-format ffmpeg opus
+```
+
+#### Ubuntu
+
+```
+sudo apt-get install libsrtp2-dev libnice-dev libavcodec-dev libavformat-dev libavutil-dev libopus-dev ffmpeg
+```
+
 ## Executando
 
 Para iniciar o seu servidor Phoenix:

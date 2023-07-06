@@ -32,6 +32,7 @@ defmodule App.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:membrane_rtc_engine, "~> 0.8.0"},
       {:phoenix, "~> 1.7.6"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
@@ -49,7 +50,12 @@ defmodule App.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      # doubtfull deps
+      # {:phoenix_inline_svg, "~> 1.4"},
+      # {:poison, "~> 3.1"},
+      # {:uuid, "~> 1.1"},
+      {:telemetry, "~> 1.0.0", override: true}
     ]
   end
 
@@ -71,7 +77,12 @@ defmodule App.MixProject do
         "esbuild.install --if-missing"
       ],
       "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["assets.setup", "tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": [
+        "assets.setup",
+        "tailwind default --minify",
+        "esbuild default --minify",
+        "phx.digest"
+      ]
     ]
   end
 end

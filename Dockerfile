@@ -21,8 +21,12 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git npm \
-    && apt-get clean && rm -f /var/lib/apt/lists/*_*
+RUN apt-get update -y
+# build basics
+RUN apt-get install -y build-essential git npm
+# audio/video
+RUN apt-get install -y libsrtp2-dev libnice-dev libavcodec-dev libavformat-dev libavutil-dev libopus-dev
+# RUN apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
 WORKDIR /app
@@ -67,7 +71,7 @@ RUN mix release
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE}
 
-RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales \
+RUN apt-get update -y && apt-get install -y libstdc++6 openssl libncurses5 locales libsrtp2-dev ffmpeg --no-install-recommends \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # Set the locale
