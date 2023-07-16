@@ -92,6 +92,9 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/app ./
 
 USER nobody
 
+EXPOSE 3478/tcp
+EXPOSE 50000-59999/udp
+
 # to run local uncomment the lines below
 # and run `docker build -t atp . && docker run --network=host -it atp`
 # ENV PHX_SERVER=true \
