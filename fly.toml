@@ -14,6 +14,12 @@ kill_signal = "SIGTERM"
   FLY_LAUNCH_MODE = "clone"
   PHX_HOST = "atp.fly.dev"
   PORT = "8080"
+  EXTERNAL_IP="149.248.198.18"
+  INTEGRATED_TURN_IP = "149.248.198.18"
+  INTEGRATED_TURN_PORT_RANGE = "50000-59999"
+  INTEGRATED_TURN_LISTEN_IP = "fly-global-services"
+  WEBRTC_USED = "true"
+
 
 [http_service]
   internal_port = 8080
@@ -26,3 +32,10 @@ kill_signal = "SIGTERM"
     type = "connections"
     hard_limit = 1000
     soft_limit = 1000
+
+[[services]]
+  internal_port = 50000
+  protocol = "udp"
+
+  [[services.ports]]
+    port = 50000
