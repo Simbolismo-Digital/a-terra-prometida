@@ -32,6 +32,7 @@ defmodule App.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:libcluster, "~> 3.3"},
       {:membrane_rtc_engine, "~> 0.8.0"},
       {:phoenix, "~> 1.7.6"},
       {:phoenix_ecto, "~> 4.4"},
