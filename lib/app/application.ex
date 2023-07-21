@@ -8,7 +8,6 @@ defmodule App.Application do
   @impl true
   def start(_type, _args) do
     config_common_dtls_key_cert()
-    topologies = Application.get_env(:libcluster, :topologies) || []
 
     children = [
       # Start the Telemetry supervisor
@@ -24,8 +23,7 @@ defmodule App.Application do
       AppWeb.Endpoint,
       # Start a worker by calling: App.Worker.start_link(arg)
       # {App.Worker, arg}
-      {Registry, keys: :unique, name: App.VideRoom.Registry},
-      {Cluster.Supervisor, [topologies, [name: App.ClusterSupervisor]]}
+      {Registry, keys: :unique, name: App.VideRoom.Registry}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
