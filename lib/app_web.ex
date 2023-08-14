@@ -17,11 +17,12 @@ defmodule AppWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def static_paths, do: ~w(static assets fonts images favicon.ico robots.txt)
 
   def router do
     quote do
-      use Phoenix.Router, helpers: false
+      # todo: disable helpers
+      use Phoenix.Router, helpers: true
 
       # Import common connection and controller functions to use in pipelines
       import Plug.Conn
@@ -44,6 +45,8 @@ defmodule AppWeb do
 
       import Plug.Conn
       import AppWeb.Gettext
+      # todo: remove later
+      alias AppWeb.Router.Helpers, as: Routes
 
       unquote(verified_routes())
     end

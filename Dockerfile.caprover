@@ -92,9 +92,6 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/app ./
 
 USER nobody
 
-EXPOSE 3478/tcp
-EXPOSE 50000-59999/udp
-
 # to run local uncomment the lines below
 # and run `docker build -t atp . && docker run --network=host -it atp`
 # ENV PHX_SERVER=true \
@@ -104,7 +101,5 @@ EXPOSE 50000-59999/udp
 
 CMD ["/app/bin/server"]
 
-# to run local comment the lines below
-# Appended by flyctl
-ENV ECTO_IPV6 true
-ENV ERL_AFLAGS "-proto_dist inet6_tcp"
+EXPOSE 3478/tcp
+EXPOSE 50000-59999/udp

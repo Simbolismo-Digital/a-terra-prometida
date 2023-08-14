@@ -112,4 +112,56 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+  app_name =
+    System.get_env("FLY_APP_NAME") ||
+      raise "FLY_APP_NAME not available"
+
+  config :libcluster,
+    debug: true,
+    topologies: [
+      fly6pn: [
+        strategy: Cluster.Strategy.DNSPoll,
+        config: [
+          polling_interval: 5_000,
+          query: "#{app_name}.internal",
+          node_basename: app_name
+        ]
+      ]
+    ]
 end
+
+defmodule ConfigParser do
+  def parse_external_ip(ip) do
+    with {:ok, parsed_ip} <- ip |> to_charlist() |> :inet.parse_address() do
+      parsed_ip
+    else
+      _ ->
+        raise("""
+        Bad EXTERNAL_IP format. Expected IPv4, got: \
+        #{inspect(ip)}
+        """)
+    end
+  end
+
+  def parse_port_range(range) do
+    with [str1, str2] <- String.split(range, "-"),
+         from when from in 0..65_535 <- String.to_integer(str1),
+         to when to in from..65_535 and from <= to <- String.to_integer(str2) do
+      {from, to}
+    else
+      _else ->
+        raise("""
+        Bad PORT_RANGE enviroment variable value. Expected "from-to", where `from` and `to` \
+        are numbers between 0 and 65535 and `from` is not bigger than `to`, got: \
+        #{inspect(range)}
+        """)
+    end
+  end
+end
+
+config :app,
+  external_ip: System.get_env("EXTERNAL_IP", "127.0.0.1") |> ConfigParser.parse_external_ip(),
+  port_range:
+    System.get_env("PORT_RANGE", "50000-59999")
+    |> ConfigParser.parse_port_range()

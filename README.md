@@ -12,6 +12,19 @@ Para prosseguir com este projeto nós assumimos que você tenha instalado:
   * Docker Desktop
   * Mix (Elixir)
 
+### Video Room
+#### Mac OS X
+
+```
+brew install srtp libnice clang-format ffmpeg opus
+```
+
+#### Ubuntu
+
+```
+sudo apt-get install libsrtp2-dev libnice-dev libavcodec-dev libavformat-dev libavutil-dev libopus-dev ffmpeg
+```
+
 ## Executando
 
 Para iniciar o seu servidor Phoenix:
@@ -34,3 +47,12 @@ Pronto para executar em produção? Por favor, [verifique nossos guias de implan
   * Código-fonte: https://github.com/phoenixframework/phoenix
   * Phoenix LiveView: https://hexdocs.pm/phoenix_live_view/
   * Exercism: https://exercism.org/tracks/elixir
+
+## Setup FLY.IO WEBRTC
+https://github.com/membraneframework/ex_dtls/issues/19
+
+https://fly.io/docs/elixir/the-basics/clustering/
+
+https://github.com/jellyfish-dev/membrane_rtc_engine/issues/171#issuecomment-1636352391
+
+https://jellyfish-dev.github.io/jellyfish-docs/deploying/fly_io

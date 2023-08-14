@@ -6,6 +6,7 @@ defmodule AppWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {AppWeb.Layouts, :root}
+    # todo: enable this
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -18,6 +19,14 @@ defmodule AppWeb.Router do
     pipe_through :browser
 
     live "/", MainLive.Index, :index
+
+    get("/videoroom", VideoRoomController, :index)
+
+    post("/videoroom", VideoRoomController, :enter)
+
+    get("/healthcheck", VideoRoomController, :healthcheck)
+
+    get("/room/:room_id", RoomController, :index)
   end
 
   # Other scopes may use custom stacks.
