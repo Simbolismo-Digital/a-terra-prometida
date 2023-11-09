@@ -71,7 +71,12 @@ defmodule App.MixProject do
         "esbuild.install --if-missing"
       ],
       "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["assets.setup", "tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": [
+        "assets.setup",
+        "tailwind default --minify",
+        "esbuild default --minify",
+        "phx.digest"
+      ]
     ]
   end
 end
