@@ -253,6 +253,7 @@ defmodule AppWeb.MainLive.Index do
           <%= @current_user.name %>
         </p>
       </div>
+      <.sound_box />
       <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
         <span href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
           Some text
@@ -264,6 +265,18 @@ defmodule AppWeb.MainLive.Index do
         >
           Some action
         </a>
+      </div>
+    </div>
+    """
+  end
+
+  defp sound_box(assigns) do
+    ~H"""
+    <div class="flex items-center justify-between py-3 text-sm">
+      <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
+        <audio src={~p"/ogg/Action 1 Loop.ogg"} type="audio/ogg" controls loop autoplay>
+          O seu navegador não suporta o elemento <code>audio</code>.
+        </audio>
       </div>
     </div>
     """

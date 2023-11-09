@@ -21,7 +21,13 @@ defmodule App.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{direction: :up, latitude: 42, longitude: 42, name: "some name", username: "some username"}
+      valid_attrs = %{
+        direction: :up,
+        latitude: 42,
+        longitude: 42,
+        name: "some name",
+        username: "some username"
+      }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
       assert user.direction == :up
@@ -37,7 +43,14 @@ defmodule App.AccountsTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{direction: :down, latitude: 43, longitude: 43, name: "some updated name", username: "some updated username"}
+
+      update_attrs = %{
+        direction: :down,
+        latitude: 43,
+        longitude: 43,
+        name: "some updated name",
+        username: "some updated username"
+      }
 
       assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
       assert user.direction == :down
