@@ -189,8 +189,13 @@ export default class MainScene extends Phaser.Scene {
   _setupTileMap() {
     const tileMap = this.make.tilemap({key: "main_tile_map"})
     tileMap.addTilesetImage("jungle", "tiles")
-    for (let i = 0; i < tileMap.layers.length; i++) {
+    for (let i = 0; i < tileMap.layers.length / 2; i++) {
       const layer = tileMap.createLayer(i, "jungle", 0, 0)
+      layer.scale = 3
+    }
+    tileMap.addTilesetImage("oldtown", "tiles_oldtown")
+    for (let i = tileMap.layers.length / 2; i < tileMap.layers.length; i++) {
+      const layer = tileMap.createLayer(i, "oldtown", 0, 0)
       layer.scale = 3
     }
     this.gridEngine.create(tileMap, {characters: []})
