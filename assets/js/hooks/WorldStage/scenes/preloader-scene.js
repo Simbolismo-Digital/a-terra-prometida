@@ -24,6 +24,7 @@ export default class PreloaderScene extends Phaser.Scene {
 
   preload() {
     this.load.image("tiles", "images/main-tiles.png")
+    this.load.image("tiles_oldtown", "images/oldtown.png")
     this.load.tilemapTiledJSON("main_tile_map", "images/main-tiles.json")
     this.load.spritesheet("player", "images/characters.png", {
       frameWidth: 52,

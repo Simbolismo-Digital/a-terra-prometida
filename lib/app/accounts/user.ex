@@ -6,7 +6,7 @@ defmodule App.Accounts.User do
     field :status, Ecto.Enum, values: [:online, :do_not_disturb, :busy], default: :online
     field :direction, Ecto.Enum, values: [:up, :down, :left, :right], default: :up
     field :latitude, :integer, default: 10
-    field :longitude, :integer, default: 10
+    field :longitude, :integer, default: 20
     field :name, :string, default: ""
     field :username, :string
 

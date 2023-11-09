@@ -272,13 +272,11 @@ defmodule AppWeb.MainLive.Index do
 
   defp sound_box(assigns) do
     ~H"""
-    <div class="flex items-center justify-between py-3 text-sm">
       <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-        <audio src={~p"/ogg/Action 1 Loop.ogg"} type="audio/ogg" controls loop autoplay>
+        <audio src={~p"/audio/Action 1 Loop.ogg"} type="audio/ogg" controls loop autoplay>
           O seu navegador não suporta o elemento <code>audio</code>.
         </audio>
       </div>
-    </div>
     """
   end
 
