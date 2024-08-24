@@ -24,6 +24,7 @@ defmodule AppWeb.MainLive.Index do
         </div>
         <div class=" bg-violet-900 w-64 border-l border-violet-600">
           <.sidebar
+            socket={@socket}
             current_user={@current_user}
             online_users={@online_users}
             offline_users={@offline_users}
@@ -73,9 +74,20 @@ defmodule AppWeb.MainLive.Index do
 
     {:ok,
      socket
+     |> assign(:first_interaction, false)
      |> assign(:current_user, current_user)
      |> assign_users()
      |> handle_joins(Presence.list(@presence))}
+  end
+
+  defp send_first_interaction(socket) do
+    if !socket.assigns[:first_interaction] do
+
+      # Dispara o evento para o AppWeb.AudioPlayerLive.Index
+      assign(socket, :first_interaction, true) |> push_event("start_audio", %{})
+    else
+      socket
+    end
   end
 
   defp assign_users(socket) do
@@ -193,7 +205,7 @@ defmodule AppWeb.MainLive.Index do
       {:change_coordinate, coordinate}
     )
 
-    {:noreply, socket |> push_event("change_coordinate", coordinate)}
+    {:noreply, socket |> send_first_interaction() |> push_event("change_coordinate", coordinate)}
   end
 
   @impl true
@@ -210,12 +222,14 @@ defmodule AppWeb.MainLive.Index do
       {:change_direction, direction}
     )
 
-    {:noreply, socket |> push_event("change_direction", direction)}
+    {:noreply, socket |> send_first_interaction() |> push_event("change_direction", direction)}
   end
 
   defp sidebar(assigns) do
     ~H"""
     <div class="h-[calc(100vh_-_56px)] grid grid-rows-[auto_minmax(88px,min-content)_minmax(0,1fr)]">
+      <%= live_render(@socket, AppWeb.AudioPlayerLive.Index, id: "audio_player") %>
+
       <div class="p-4 flex justify-between items-center">
         <p class="text-white text-base font-semibold truncate text-ellipsis flex-1">
           Office name
@@ -253,7 +267,6 @@ defmodule AppWeb.MainLive.Index do
           <%= @current_user.name %>
         </p>
       </div>
-      <.sound_box />
       <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
         <span href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
           Some text
@@ -267,16 +280,6 @@ defmodule AppWeb.MainLive.Index do
         </a>
       </div>
     </div>
-    """
-  end
-
-  defp sound_box(assigns) do
-    ~H"""
-      <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-        <audio src={~p"/audio/Action 1 Loop.ogg"} type="audio/ogg" controls loop autoplay>
-          O seu navegador não suporta o elemento <code>audio</code>.
-        </audio>
-      </div>
     """
   end
 
