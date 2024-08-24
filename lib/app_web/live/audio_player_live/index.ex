@@ -12,10 +12,16 @@ defmodule AppWeb.AudioPlayerLive.Index do
     <div id="audio-player" class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
       <div class="bg-zinc-800 p-4 rounded-lg flex items-center justify-between w-full">
         <div id="youtube-player" class="flex-1">
-          <iframe id="youtube-iframe" height="100" src={"https://www.youtube.com/embed/#{@video_id}?autoplay=1&controls=1"} allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          <iframe
+            id="youtube-iframe"
+            height="100"
+            src={"https://www.youtube.com/embed/#{@video_id}?autoplay=1&controls=1"}
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          >
+          </iframe>
         </div>
       </div>
-
     </div>
 
     <style>
