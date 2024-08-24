@@ -23,12 +23,24 @@ defmodule AppWeb.MainLive.Index do
         >
         </div>
         <div class=" bg-violet-900 w-64 border-l border-violet-600">
-          <.live_component module={AppWeb.Components.SideBar} id="sidebar" title="A Terra Prometida" area="O templo de Arjuna" online_users={@online_users} offline_users={@offline_users}/>
+          <.live_component
+            module={AppWeb.Components.SideBar}
+            id="sidebar"
+            title="A Terra Prometida"
+            area="O templo de Arjuna"
+            autoplay={@autoplay}
+            online_users={@online_users}
+            offline_users={@offline_users}
+          />
         </div>
       </div>
 
       <header class="px-4 bg-violet-900 sm:px-6 lg:px-8 border-t border-violet-600">
-        <.live_component module={AppWeb.Components.ControlPanel} id="control_panel" current_user={@current_user}/>
+        <.live_component
+          module={AppWeb.Components.ControlPanel}
+          id="control_panel"
+          current_user={@current_user}
+        />
       </header>
     </div>
     """
@@ -69,6 +81,7 @@ defmodule AppWeb.MainLive.Index do
 
     {:ok,
      socket
+     |> assign(:autoplay, false)
      |> assign(:current_user, current_user)
      |> assign_users()
      |> handle_joins(Presence.list(@presence))}
@@ -189,7 +202,10 @@ defmodule AppWeb.MainLive.Index do
       {:change_coordinate, coordinate}
     )
 
-    {:noreply, socket |> push_event("change_coordinate", coordinate)}
+    {:noreply,
+     socket
+     |> push_event("change_coordinate", coordinate)
+     |> assign(:autoplay, true)}
   end
 
   @impl true

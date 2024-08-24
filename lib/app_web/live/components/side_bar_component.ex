@@ -8,7 +8,12 @@ defmodule AppWeb.Components.SideBar do
   def render(assigns) do
     ~H"""
     <div class="h-[calc(100vh_-_56px)] grid grid-rows-[auto_minmax(88px,min-content)_minmax(0,1fr)]">
-      <%= live_render(@socket, AppWeb.AudioPlayerLive.Index, id: "audio_player") %>
+      <.live_component
+        module={AppWeb.Components.AudioPlayer}
+        id="audio_player"
+        autoplay={@autoplay}
+        video_id="d9SCrpXN3EE"
+      />
 
       <div class="p-4 flex justify-between items-center">
         <p class="text-white text-base font-semibold truncate text-ellipsis flex-1">
