@@ -26,6 +26,12 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.image("tiles", "images/main-tiles.png")
     this.load.image("tiles_oldtown", "images/oldtown.png")
     this.load.tilemapTiledJSON("main_tile_map", "images/main-tiles.json")
+
+    this.load.image("tiles_walk", "images/o-templo-de-arjuna/walk.png")
+    this.load.image("tiles_walls", "images/o-templo-de-arjuna/walls.png")
+    this.load.image("tiles_center", "images/o-templo-de-arjuna/center.png")
+    this.load.tilemapTiledJSON("o_templo_de_arjuna_tile_map", "images/o-templo-de-arjuna/o-templo-de-arjuna.json")
+
     this.load.spritesheet("player", "images/characters.png", {
       frameWidth: 52,
       frameHeight: 72,

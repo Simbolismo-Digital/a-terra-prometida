@@ -187,18 +187,38 @@ export default class MainScene extends Phaser.Scene {
    * @private
    */
   _setupTileMap() {
-    const tileMap = this.make.tilemap({key: "main_tile_map"})
-    tileMap.addTilesetImage("jungle", "tiles")
+    // this._setupMain();
+    this._setupTemple();
+  }
+
+  _setupMain() {
+    const tileMap = this.make.tilemap({key: "main_tile_map"});
+    tileMap.addTilesetImage("jungle", "tiles");
     for (let i = 0; i < tileMap.layers.length / 2; i++) {
       const layer = tileMap.createLayer(i, "jungle", 0, 0)
       layer.scale = 3
-    }
-    tileMap.addTilesetImage("oldtown", "tiles_oldtown")
+    };
+    tileMap.addTilesetImage("oldtown", "tiles_oldtown");
     for (let i = tileMap.layers.length / 2; i < tileMap.layers.length; i++) {
       const layer = tileMap.createLayer(i, "oldtown", 0, 0)
       layer.scale = 3
+    };
+    this.gridEngine.create(tileMap, {characters: []});
+  }
+
+  _setupTemple() {
+    // Carregar o mapa JSON
+    const tileMap = this.make.tilemap({ key: "o_templo_de_arjuna_tile_map" });
+
+    // Adicionar Tilesets ao mapa
+    tileMap.addTilesetImage("center", "tiles_center");
+
+    // Criar as camadas
+    for (let i = 0; i < tileMap.layers.length; i++) {
+        const layer = tileMap.createLayer(i, "center", 0, 0);
+        layer.scale = 3;
     }
-    this.gridEngine.create(tileMap, {characters: []})
+    this.gridEngine.create(tileMap, {characters: []});
   }
 
   /**
