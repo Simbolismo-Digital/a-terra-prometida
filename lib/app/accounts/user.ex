@@ -3,7 +3,7 @@ defmodule App.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
-    field :status, Ecto.Enum, values: [:online, :do_not_disturb, :busy], default: :online
+    field :status, Ecto.Enum, values: [:online, :do_not_disturb, :busy, :npc], default: :online
     field :direction, Ecto.Enum, values: [:up, :down, :left, :right], default: :up
     field :latitude, :integer, default: 10
     field :longitude, :integer, default: 20

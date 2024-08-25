@@ -79,6 +79,13 @@ defmodule AppWeb.MainLive.Index do
       Phoenix.PubSub.subscribe(PubSub, @change_direction)
     end
 
+    create_npc("1 Yogi", %{longitude: 10, latitude: 10})
+    create_npc("2 Hare Krishna", %{longitude: 10, latitude: 12})
+    create_npc("3 Cristão", %{longitude: 10, latitude: 14})
+    create_npc("4 Mulçumano", %{longitude: 10, latitude: 16})
+    create_npc("5 Budista", %{longitude: 10, latitude: 18})
+    create_npc("6 Líder de Umbanda", %{longitude: 10, latitude: 20})
+
     {:ok,
      socket
      |> assign(:autoplay, false)
@@ -87,13 +94,27 @@ defmodule AppWeb.MainLive.Index do
      |> handle_joins(Presence.list(@presence))}
   end
 
+  defp create_npc(name, attributes \\ %{}) do
+    %{
+      name: name,
+      username: "npc_#{name}",
+      status: "npc",
+      latitude: attributes[:latitude] || 10,
+      longitude: attributes[:longitude] || 10,
+      direction: attributes[:direction] || :down
+    }
+    |> App.Accounts.create_user()
+    |> inspect()
+    |> IO.puts()
+  end
+
   defp assign_users(socket) do
     user_ids = Presence.list(@presence) |> Map.keys()
 
     users = Accounts.list_users()
 
-    online_users = Enum.filter(users, fn user -> user.id in user_ids end)
-    offline_users = Enum.filter(users, fn user -> user.id not in user_ids end)
+    online_users = Enum.filter(users, fn user -> user.id in user_ids or user.status == :npc end)
+    offline_users = Enum.filter(users, fn user -> user.id not in user_ids and user.status != :npc end)
 
     socket
     |> assign(:online_users, online_users)
@@ -176,7 +197,7 @@ defmodule AppWeb.MainLive.Index do
 
     users =
       Accounts.list_users()
-      |> Enum.filter(fn user -> user.id in user_ids end)
+      |> Enum.filter(fn user -> user.id in user_ids or user.status == :npc end)
       |> Enum.map(fn user -> encode(user) end)
 
     {:noreply,

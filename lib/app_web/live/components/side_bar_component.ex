@@ -53,6 +53,7 @@ defmodule AppWeb.Components.SideBar do
           "absolute right-0 bottom-0 w-3 h-3 rounded-full border-2 border-slate-900",
           if(!@online, do: "bg-slate-300"),
           if(@online and @user.status == :online, do: "bg-green-500"),
+          if(@online and @user.status == :npc, do: "bg-green-500"),
           if(@online and @user.status == :busy, do: "bg-yellow-500"),
           if(@online and @user.status == :do_not_disturb, do: "bg-red-500")
         ]}>
