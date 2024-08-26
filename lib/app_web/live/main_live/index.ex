@@ -22,6 +22,28 @@ defmodule AppWeb.MainLive.Index do
           class="flex-1 relative overflow-hidden"
         >
         </div>
+        <div
+          id="message-bubble"
+          phx-hook="MessageBubble"
+          class="hidden absolute bg-white border border-gray-400 p-4 rounded"
+          style="cursor: move; min-width: 400px; min-height: 200px;"
+        >
+          <div class="flex justify-between items-center">
+            <div id="message-bubble-header" class="p-2 rounded-t">
+              Fale com o <b>templo de Arjuna</b>:
+            </div>
+            <button
+              id="close-bubble"
+              class="text-gray-500 hover:text-gray-800"
+              style="margin-top: -30px;"
+              title="<esc>"
+            >
+              &times;
+            </button>
+          </div>
+          <textarea id="message-input" class="mt-2 w-full h-32 border border-gray-300 rounded p-4">
+          </textarea>
+        </div>
         <div class=" bg-violet-900 w-64 border-l border-violet-600">
           <.live_component
             module={AppWeb.Components.SideBar}
@@ -104,8 +126,6 @@ defmodule AppWeb.MainLive.Index do
       direction: attributes[:direction] || :down
     }
     |> App.Accounts.create_user()
-    |> inspect()
-    |> IO.puts()
   end
 
   defp assign_users(socket) do
@@ -114,7 +134,9 @@ defmodule AppWeb.MainLive.Index do
     users = Accounts.list_users()
 
     online_users = Enum.filter(users, fn user -> user.id in user_ids or user.status == :npc end)
-    offline_users = Enum.filter(users, fn user -> user.id not in user_ids and user.status != :npc end)
+
+    offline_users =
+      Enum.filter(users, fn user -> user.id not in user_ids and user.status != :npc end)
 
     socket
     |> assign(:online_users, online_users)

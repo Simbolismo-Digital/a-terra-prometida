@@ -24,7 +24,9 @@ defmodule AppWeb.Components.AudioPlayer do
         <iframe
           id="youtube-iframe"
           height="100"
-          src={@autoplay && "https://www.youtube.com/embed/#{@video_id}?autoplay=1&controls=1"}
+          src={
+            @autoplay && "https://www.youtube-nocookie.com/embed/#{@video_id}?autoplay=1&controls=1"
+          }
           allow="autoplay; encrypted-media"
           allowfullscreen
         >

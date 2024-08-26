@@ -161,8 +161,15 @@ export default class MainScene extends Phaser.Scene {
    * @private
    */
   _handleNavigationKeys() {
+    const speaking = !document.getElementById("message-bubble").classList.contains("hidden");
+    
+    if (speaking) {
+      this.input.keyboard.clearCaptures();
+      return;
+    }
+
     const cursors = this.input.keyboard.createCursorKeys()
-    const alphaCursors = this.input.keyboard.addKeys("W,A,S,D,H,J,K,L")
+    const alphaCursors = this.input.keyboard.addKeys("W,A,S,D,H,J,K,L", false)
 
     const directionPressed = new Map([
       ["up", cursors.up.isDown || alphaCursors.W.isDown || alphaCursors.K.isDown],

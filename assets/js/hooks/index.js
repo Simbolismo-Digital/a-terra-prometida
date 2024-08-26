@@ -1,3 +1,4 @@
+import MessageBubble from "./MessageBubble/message-bubble"
 import WorldStage from "./WorldStage/world-stage"
 
 /**
@@ -6,5 +7,6 @@ import WorldStage from "./WorldStage/world-stage"
  * @type {Object<string, import("phoenix_live_view").ViewHook>}
  */
 export default {
+  MessageBubble: MessageBubble,
   WorldStage: WorldStage,
 }

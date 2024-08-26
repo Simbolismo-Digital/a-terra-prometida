@@ -12,7 +12,7 @@ kill_signal = "SIGTERM"
 
 [env]
   FLY_LAUNCH_MODE = "clone"
-  PHX_HOST = "atp.fly.dev"
+  PHX_HOST = "www.simbolismodigital.com.br"
   PORT = "8080"
 
 [http_service]
