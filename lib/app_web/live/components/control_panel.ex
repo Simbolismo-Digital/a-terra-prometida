@@ -9,8 +9,8 @@ defmodule AppWeb.Components.ControlPanel do
     ~H"""
     <div class="flex items-center justify-between py-3 text-sm">
       <div class="flex items-center gap-4">
-        <a href="/">
-          <img src={~p"/images/logo.svg"} width="36" />
+        <a href="/" style="border-radius: 50%; background-color: #ffffff;">
+          <img src={~p"/images/logo.png"} width="36" />
         </a>
         <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
           <%= @current_user.name %>
