@@ -3,3 +3,33 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+/* Estilização das barras de rolagem para WebKit (Chrome, Safari) */
+.custom-scroll::-webkit-scrollbar {
+    width: 12px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: #5e35b1; /* Cor de fundo da trilha da barra de rolagem */
+border-radius: 10px; /* Bordas arredondadas da trilha */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #7e57c2; /* Cor da parte deslizante da barra de rolagem */
+    border-radius: 10px; /* Bordas arredondadas da parte deslizante */
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9575cd; /* Cor ao passar o mouse sobre a parte deslizante */
+}
+
+/* Estilização das barras de rolagem para Firefox */
+.custom-scroll {
+    scrollbar-width: thin; /* Largura da barra de rolagem */
+    scrollbar-color: #7e57c2 #5e35b1; /* Cor da parte deslizante e da trilha */
+}
+
+/* Para navegadores que não suportam a estilização das barras de rolagem */
+.custom-scroll {
+    overflow-y: auto;
+}

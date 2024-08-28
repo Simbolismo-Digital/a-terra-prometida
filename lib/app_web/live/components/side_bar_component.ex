@@ -7,7 +7,7 @@ defmodule AppWeb.Components.SideBar do
 
   def render(assigns) do
     ~H"""
-    <div class="h-[calc(100vh_-_56px)] grid grid-rows-[auto_minmax(88px,min-content)_minmax(0,1fr)]">
+    <div class="h-[calc(100vh_-_80px)] flex flex-col">
       <.live_component
         module={AppWeb.Components.AudioPlayer}
         id="audio_player"
@@ -24,17 +24,23 @@ defmodule AppWeb.Components.SideBar do
         </div>
       </div>
 
-      <div class="space-y-4 p-4 overflow-y-auto border-y-2 border-violet-500 bg-violet-700">
-        <div class="text-white text-sm font-semibold uppercase"><%= @area %></div>
-        <div>
-          <.user_button :for={user <- @online_users} user={user} online={true} />
+      <div class="flex flex-col flex-1 overflow-hidden">
+        <div class="space-y-4 overflow-y-auto custom-scroll border-y-2 border-violet-500 bg-violet-700">
+          <div class="text-white text-sm font-semibold uppercase sticky top-0 bg-violet-700 z-10 p-4">
+            <%= @area %>
+          </div>
+          <div>
+            <.user_button :for={user <- @online_users} user={user} online={true} />
+          </div>
         </div>
-      </div>
 
-      <div class="space-y-4 p-4 overflow-y-auto">
-        <div class="text-white text-sm font-semibold uppercase">Offline users</div>
-        <div>
-          <.user_button :for={user <- @offline_users} user={user} online={false} />
+        <div class="max-h-[50%] space-y-4 overflow-y-auto custom-scroll">
+          <div class="text-white text-sm font-semibold uppercase sticky top-0 bg-violet-900 z-10 p-4">
+            Usuários offline
+          </div>
+          <div>
+            <.user_button :for={user <- @offline_users} user={user} online={false} />
+          </div>
         </div>
       </div>
     </div>
