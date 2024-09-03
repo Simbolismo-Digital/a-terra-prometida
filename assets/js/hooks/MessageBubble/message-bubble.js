@@ -2,6 +2,10 @@ const MessageBubble = {
   mounted() {
     this.shift = false;
     
+    this.handleEvent("messages", (message) => {
+      this.chatStoryAppend(message.username, message.content);
+    })
+
     // Função para mostrar o balão
     document.addEventListener("keydown", (event) => {
       const speaking = !document.getElementById("message-bubble").classList.contains("hidden");
@@ -25,7 +29,7 @@ const MessageBubble = {
             }
       }
     });
-
+    
     document.addEventListener("keyup", (event) => {
         if (event.key === "Shift") {
             this.shift = false;
@@ -74,17 +78,38 @@ const MessageBubble = {
   showBubble() {
     document.getElementById("message-bubble").classList.remove("hidden");
     document.getElementById("message-input").focus();
+    this.pushEvent("message_bubble_hidden", { hidden: false });
+
   },
 
   closeBubble() {
     document.getElementById("message-bubble").classList.add("hidden");
+    this.pushEvent("message_bubble_hidden", { hidden: true });
   },
 
   sendMessage() {
     const messageInput = document.getElementById("message-input");
-    if (messageInput.value === "") this.closeBubble(); 
-    console.log(`Enviando mesangem "${messageInput.value}"`);
+    const message = messageInput.value.trim();
+    if (message === "") {
+      this.closeBubble();
+      return false;
+    }
+    console.log(`Enviando mensagem "${message}"`);
+    // Enviar a mensagem ao servidor
+    this.pushEvent("send_message", { content: message });
     messageInput.value = "";
+  },
+  
+  chatStoryAppend(user, content) {
+    const chatStory = document.getElementById("chat-story");
+    const messageElement = document.createElement("div");
+    messageElement.innerHTML = `<b>${user}:</b> ${content}`;
+    chatStory.appendChild(messageElement);
+    
+    // Manter o scroll no final ao adicionar uma nova mensagem
+    chatStory.scrollTop = chatStory.scrollHeight;
+    
+    this.showBubble();
   }
 };
 

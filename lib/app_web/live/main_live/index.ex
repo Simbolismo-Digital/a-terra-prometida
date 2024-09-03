@@ -8,6 +8,7 @@ defmodule AppWeb.MainLive.Index do
   @presence "main-stage:presence"
   @change_coordinate "main-stage:change_coordinate"
   @change_direction "main-stage:change_direction"
+  @messages "main-stage:messages"
 
   @impl true
   def render(assigns) do
@@ -25,7 +26,8 @@ defmodule AppWeb.MainLive.Index do
         <div
           id="message-bubble"
           phx-hook="MessageBubble"
-          class="hidden absolute bg-white border border-gray-400 p-4 rounded"
+          phx-update="ignore"
+          class={"absolute bg-white border border-gray-400 p-4 rounded" <> (if @message_bubble_hidden, do: " hidden", else: "")}
           style="cursor: move; min-width: 400px; min-height: 200px;"
         >
           <div class="flex justify-between items-center">
@@ -40,6 +42,14 @@ defmodule AppWeb.MainLive.Index do
             >
               &times;
             </button>
+          </div>
+          <!-- Seção de histórico de chat -->
+          <div
+            id="chat-story"
+            class="overflow-y-auto mb-4 border border-gray-300 rounded p-2"
+            style="max-height: 150px; max-width: 365px; background-color: #f7f7f7; word-wrap: break-word;"
+          >
+            <!-- Mensagens anteriores irão aparecer aqui -->
           </div>
           <textarea id="message-input" class="mt-2 w-full h-32 border border-gray-300 rounded p-4">
           </textarea>
@@ -99,6 +109,7 @@ defmodule AppWeb.MainLive.Index do
       Phoenix.PubSub.subscribe(PubSub, @presence)
       Phoenix.PubSub.subscribe(PubSub, @change_coordinate)
       Phoenix.PubSub.subscribe(PubSub, @change_direction)
+      Phoenix.PubSub.subscribe(PubSub, @messages)
     end
 
     create_npc("1 Yogi", %{longitude: 10, latitude: 10})
@@ -110,6 +121,7 @@ defmodule AppWeb.MainLive.Index do
 
     {:ok,
      socket
+     |> assign(:message_bubble_hidden, true)
      |> assign(:autoplay, false)
      |> assign(:current_user, current_user)
      |> assign_users()
@@ -212,6 +224,14 @@ defmodule AppWeb.MainLive.Index do
   end
 
   @impl true
+  def handle_info(
+        {:messages, params},
+        socket
+      ) do
+    {:noreply, push_event(socket, "messages", params)}
+  end
+
+  @impl true
   def handle_event("ready", _params, socket) do
     user_ids =
       Presence.list(@presence)
@@ -249,6 +269,8 @@ defmodule AppWeb.MainLive.Index do
      socket
      |> push_event("change_coordinate", coordinate)
      |> assign(:autoplay, true)}
+
+    #  |> assign(:autoplay, false)}
   end
 
   @impl true
@@ -266,5 +288,25 @@ defmodule AppWeb.MainLive.Index do
     )
 
     {:noreply, socket |> push_event("change_direction", direction)}
+  end
+
+  @impl true
+  def handle_event("send_message", %{"content" => content}, socket) do
+    current_user = socket.assigns.current_user
+    IO.puts("Server: send_message #{current_user.username} #{content}")
+
+    Phoenix.PubSub.broadcast(
+      PubSub,
+      @messages,
+      {:messages,
+       %{"user_id" => current_user.id, "username" => current_user.username, "content" => content}}
+    )
+
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("message_bubble_hidden", %{"hidden" => value}, socket) do
+    {:noreply, assign(socket, :message_bubble_hidden, value)}
   end
 end
