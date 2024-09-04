@@ -27,13 +27,18 @@ defmodule AppWeb.MainLive.Index do
           id="message-bubble"
           phx-hook="MessageBubble"
           phx-update="ignore"
-          class={"absolute bg-white border border-gray-400 p-4 rounded" <> (if @message_bubble_hidden, do: " hidden", else: "")}
-          style="cursor: move; min-width: 400px; min-height: 200px;"
+          class={"z-50 absolute bg-white border border-gray-400 p-4 rounded" <> (if @message_bubble_hidden, do: " hidden", else: "")}
+          style="cursor: move; min-width: 450px; max-width: 400px; min-height: 200px;"
         >
           <div class="flex justify-between items-center">
             <div id="message-bubble-header" class="p-2 rounded-t">
               Fale com o <b>templo de Arjuna</b>:
             </div>
+            <!-- Seleção de Modo -->
+            <select id="chat-mode" class="m-4 rounded">
+              <option value="free" selected>livremente</option>
+              <option value="buddhist">com o monge budista</option>
+            </select>
             <button
               id="close-bubble"
               class="text-gray-500 hover:text-gray-800"
@@ -46,8 +51,8 @@ defmodule AppWeb.MainLive.Index do
           <!-- Seção de histórico de chat -->
           <div
             id="chat-story"
-            class="overflow-y-auto mb-4 border border-gray-300 rounded p-2"
-            style="max-height: 150px; max-width: 365px; background-color: #f7f7f7; word-wrap: break-word;"
+            class="w-full overflow-y-auto mb-4 border border-gray-300 rounded p-2"
+            style="max-height: 150px; background-color: #f7f7f7; word-wrap: break-word;"
           >
             <!-- Mensagens anteriores irão aparecer aqui -->
           </div>
@@ -116,12 +121,14 @@ defmodule AppWeb.MainLive.Index do
     create_npc("2 Hare Krishna", %{longitude: 10, latitude: 12})
     create_npc("3 Cristão", %{longitude: 10, latitude: 14})
     create_npc("4 Mulçumano", %{longitude: 10, latitude: 16})
-    create_npc("5 Budista", %{longitude: 10, latitude: 18})
+    {:ok, buddhist} = create_npc("5 Budista", %{longitude: 10, latitude: 18})
     create_npc("6 Líder de Umbanda", %{longitude: 10, latitude: 20})
 
     {:ok,
      socket
      |> assign(:message_bubble_hidden, true)
+     |> assign(:story, [])
+     |> assign(:buddhist, buddhist)
      |> assign(:autoplay, false)
      |> assign(:current_user, current_user)
      |> assign_users()
@@ -247,6 +254,27 @@ defmodule AppWeb.MainLive.Index do
      |> push_event("users", %{users: users})}
   end
 
+  # Lida com a mensagem async para processar o chat_with_monk
+  @impl true
+  def handle_info({:chat_with_monk, content}, socket) do
+    {:ok, answer, story} = App.Personas.chat_with_monk(content, socket.assigns.story)
+
+    # Broadcast the monk's response
+    Phoenix.PubSub.broadcast(
+      PubSub,
+      @messages,
+      {:messages,
+      %{
+        "user_id" => socket.assigns.buddhist.id,
+        "username" => socket.assigns.buddhist.name,
+        "content" => answer
+      }}
+    )
+
+    # Update the story in the socket
+    {:noreply, assign(socket, :story, story)}
+  end
+
   @impl true
   def handle_event(
         "change_my_coordinate",
@@ -291,9 +319,9 @@ defmodule AppWeb.MainLive.Index do
   end
 
   @impl true
-  def handle_event("send_message", %{"content" => content}, socket) do
+  def handle_event("send_message", %{"content" => content, "mode" => mode}, socket) do
     current_user = socket.assigns.current_user
-    IO.puts("Server: send_message #{current_user.username} #{content}")
+    IO.puts("Server: send_message #{current_user.username} #{mode} #{content}")
 
     Phoenix.PubSub.broadcast(
       PubSub,
@@ -301,6 +329,11 @@ defmodule AppWeb.MainLive.Index do
       {:messages,
        %{"user_id" => current_user.id, "username" => current_user.username, "content" => content}}
     )
+
+    # If the mode is "buddhist", send a message to the LiveView process for async handling
+    if mode == "buddhist" do
+      send(self(), {:chat_with_monk, content})
+    end
 
     {:noreply, socket}
   end

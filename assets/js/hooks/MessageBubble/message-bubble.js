@@ -1,6 +1,7 @@
 const MessageBubble = {
   mounted() {
     this.shift = false;
+    this.mode = document.getElementById("chat-mode").value;
     
     this.handleEvent("messages", (message) => {
       this.chatStoryAppend(message.username, message.content);
@@ -73,6 +74,11 @@ const MessageBubble = {
       document.addEventListener("mousemove", onMouseMove);
       document.addEventListener("mouseup", onMouseUp);
     });
+
+    // Configurar modo de conversa
+    document.getElementById("chat-mode").addEventListener("change", (event) => {
+      this.mode = event.target.value;
+    });
   },
 
   showBubble() {
@@ -94,9 +100,9 @@ const MessageBubble = {
       this.closeBubble();
       return false;
     }
-    console.log(`Enviando mensagem "${message}"`);
-    // Enviar a mensagem ao servidor
-    this.pushEvent("send_message", { content: message });
+    // Enviar mensagem com o modo selecionado
+    console.log(`Enviando mensagem "${message}" no modo "${this.mode}"`);
+    this.pushEvent("send_message", { content: message, mode: this.mode });
     messageInput.value = "";
   },
   

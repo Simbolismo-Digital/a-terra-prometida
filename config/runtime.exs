@@ -20,6 +20,20 @@ if System.get_env("PHX_SERVER") do
   config :app, AppWeb.Endpoint, server: true
 end
 
+if config_env() == :dev do
+  # Load environment variables using Dotenv
+  env_vars = Dotenv.load()
+
+  # Set the variables in the system environment
+  Enum.each(env_vars.values, fn {key, value} ->
+    System.put_env(key, value)
+  end)
+end
+
+config :app, App.AI,
+  # open_ai_api_key: System.fetch_env!("OPEN_AI_API_KEY"),
+  gemini_ai_api_key: System.fetch_env!("GEMINI_AI_API_KEY")
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||
