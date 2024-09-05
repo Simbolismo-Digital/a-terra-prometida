@@ -123,8 +123,8 @@ const MessageBubble = {
     messageElement.innerHTML = `<b>${user}:</b> ${htmlContent}`;
     chatStory.appendChild(messageElement);
     
-    // Manter o scroll no final ao adicionar uma nova mensagem
-    chatStory.scrollTop = chatStory.scrollHeight;
+    // Rolar o scroll para o final ao adicionar uma nova mensagem
+    // chatStory.scrollTop = chatStory.scrollHeight;
     
     this.showBubble();
   }

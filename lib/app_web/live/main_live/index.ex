@@ -28,7 +28,7 @@ defmodule AppWeb.MainLive.Index do
           phx-hook="MessageBubble"
           phx-update="ignore"
           class={"z-50 absolute bg-white border border-gray-400 p-4 rounded" <> (if @message_bubble_hidden, do: " hidden", else: "")}
-          style="cursor: move; min-width: 450px; max-width: 400px; min-height: 200px;"
+          style="cursor: move; min-width: 450px; max-width: 800px; min-height: 800px; min-height: 800px;"
         >
           <div class="flex justify-between items-center">
             <div id="message-bubble-header" class="p-2 rounded-t">
@@ -37,7 +37,13 @@ defmodule AppWeb.MainLive.Index do
             <!-- Seleção de Modo -->
             <select id="chat-mode" class="m-4 rounded">
               <option value="free" selected>livremente</option>
+              <option value="yogi">com o yogi</option>
+              <option value="krishna">com o hare krishna</option>
+              <option value="christian">com o cristão</option>
+              <option value="muslim">com o mulçumano</option>
               <option value="buddhist">com o monge budista</option>
+              <option value="babalorixa">com o babalorixá</option>
+              <option value="all">com todos</option>
             </select>
             <button
               id="close-bubble"
@@ -48,16 +54,16 @@ defmodule AppWeb.MainLive.Index do
               &times;
             </button>
           </div>
+          <textarea id="message-input" class="mt-2 w-full h-32 border border-gray-300 rounded p-4">
+          </textarea>
           <!-- Seção de histórico de chat -->
           <div
             id="chat-story"
             class="w-full overflow-y-auto mb-4 border border-gray-300 rounded p-2"
-            style="cursor: auto; max-height: 150px; background-color: #f7f7f7; word-wrap: break-word;"
+            style="min-height: 400px; max-height: 550px; cursor: auto; background-color: #f7f7f7; word-wrap: break-word;"
           >
             <!-- Mensagens anteriores irão aparecer aqui -->
           </div>
-          <textarea id="message-input" class="mt-2 w-full h-32 border border-gray-300 rounded p-4">
-          </textarea>
         </div>
         <div class=" bg-violet-900 w-64 border-l border-violet-600">
           <.live_component
@@ -117,18 +123,24 @@ defmodule AppWeb.MainLive.Index do
       Phoenix.PubSub.subscribe(PubSub, @messages)
     end
 
-    create_npc("1 Yogi", %{longitude: 10, latitude: 10})
-    create_npc("2 Hare Krishna", %{longitude: 10, latitude: 12})
-    create_npc("3 Cristão", %{longitude: 10, latitude: 14})
-    create_npc("4 Mulçumano", %{longitude: 10, latitude: 16})
+    {:ok, yogi} = create_npc("1 Yogi", %{longitude: 10, latitude: 10})
+    {:ok, krishna} = create_npc("2 Hare Krishna", %{longitude: 10, latitude: 12})
+    {:ok, christian} = create_npc("3 Cristão", %{longitude: 10, latitude: 14})
+    {:ok, muslim} = create_npc("4 Mulçumano", %{longitude: 10, latitude: 16})
     {:ok, buddhist} = create_npc("5 Budista", %{longitude: 10, latitude: 18})
-    create_npc("6 Líder de Umbanda", %{longitude: 10, latitude: 20})
+    {:ok, babalorixa} = create_npc("6 Líder de Umbanda", %{longitude: 10, latitude: 20})
 
     {:ok,
      socket
      |> assign(:message_bubble_hidden, true)
-     |> assign(:story, [])
-     |> assign(:buddhist, buddhist)
+     |> assign(:npcs, %{
+       "yogi" => %{character: yogi, story: []},
+       "krishna" => %{character: krishna, story: []},
+       "christian" => %{character: christian, story: []},
+       "muslim" => %{character: muslim, story: []},
+       "buddhist" => %{character: buddhist, story: []},
+       "babalorixa" => %{character: babalorixa, story: []}
+     })
      |> assign(:autoplay, false)
      |> assign(:current_user, current_user)
      |> assign_users()
@@ -238,25 +250,137 @@ defmodule AppWeb.MainLive.Index do
     {:noreply, push_event(socket, "messages", params)}
   end
 
-  # Lida com a mensagem async para processar o chat_with_monk
+  # Lida com a mensagem async para processar o chat_with_npc
   @impl true
-  def handle_info({:chat_with_monk, content}, socket) do
-    {:ok, answer, story} = App.Personas.chat_with_monk(content, socket.assigns.story)
+  def handle_info({:chat_with_npc, "all", content}, socket) do
+    send(self(), {:chat_with_npc, "yogi", content})
+    send(self(), {:chat_with_npc, "krishna", content})
+    send(self(), {:chat_with_npc, "christian", content})
+    send(self(), {:chat_with_npc, "muslim", content})
+    send(self(), {:chat_with_npc, "buddhist", content})
+    send(self(), {:chat_with_npc, "babalorixa", content})
+    {:noreply, socket}
+  end
 
-    # Broadcast the monk's response
+  @impl true
+  def handle_info({:chat_with_npc, "yogi", content}, socket) do
+    {:ok, answer, story} = App.Personas.chat_with_yogi(content, socket.assigns.npcs["yogi"].story)
+
+    broadcast_npc(socket, "yogi", answer)
+
+    # Update the story in the socket
+    {:noreply,
+     socket
+     |> assign(
+       :npcs,
+       Map.update!(socket.assigns.npcs, "yogi", fn yogi_data ->
+         %{yogi_data | story: story}
+       end)
+     )}
+  end
+
+  @impl true
+  def handle_info({:chat_with_npc, "krishna", content}, socket) do
+    {:ok, answer, story} =
+      App.Personas.chat_with_hare_krishna(content, socket.assigns.npcs["krishna"].story)
+
+    broadcast_npc(socket, "krishna", answer)
+
+    # Update the story in the socket
+    {:noreply,
+     socket
+     |> assign(
+       :npcs,
+       Map.update!(socket.assigns.npcs, "krishna", fn krishna_data ->
+         %{krishna_data | story: story}
+       end)
+     )}
+  end
+
+  @impl true
+  def handle_info({:chat_with_npc, "christian", content}, socket) do
+    {:ok, answer, story} =
+      App.Personas.chat_with_christian(content, socket.assigns.npcs["christian"].story)
+
+    broadcast_npc(socket, "christian", answer)
+
+    # Update the story in the socket
+    {:noreply,
+     socket
+     |> assign(
+       :npcs,
+       Map.update!(socket.assigns.npcs, "christian", fn christian_data ->
+         %{christian_data | story: story}
+       end)
+     )}
+  end
+
+  @impl true
+  def handle_info({:chat_with_npc, "muslim", content}, socket) do
+    {:ok, answer, story} =
+      App.Personas.chat_with_muslim(content, socket.assigns.npcs["muslim"].story)
+
+    broadcast_npc(socket, "muslim", answer)
+
+    # Update the story in the socket
+    {:noreply,
+     socket
+     |> assign(
+       :npcs,
+       Map.update!(socket.assigns.npcs, "muslim", fn muslim_data ->
+         %{muslim_data | story: story}
+       end)
+     )}
+  end
+
+  @impl true
+  def handle_info({:chat_with_npc, "buddhist", content}, socket) do
+    {:ok, answer, story} =
+      App.Personas.chat_with_monk(content, socket.assigns.npcs["buddhist"].story)
+
+    broadcast_npc(socket, "buddhist", answer)
+
+    # Update the story in the socket
+    {:noreply,
+     socket
+     |> assign(
+       :npcs,
+       Map.update!(socket.assigns.npcs, "buddhist", fn buddhist_data ->
+         %{buddhist_data | story: story}
+       end)
+     )}
+  end
+
+  @impl true
+  def handle_info({:chat_with_npc, "babalorixa", content}, socket) do
+    {:ok, answer, story} =
+      App.Personas.chat_with_babalorixa(content, socket.assigns.npcs["babalorixa"].story)
+
+    broadcast_npc(socket, "babalorixa", answer)
+
+    # Update the story in the socket
+    {:noreply,
+     socket
+     |> assign(
+       :npcs,
+       Map.update!(socket.assigns.npcs, "babalorixa", fn babalorixa_data ->
+         %{babalorixa_data | story: story}
+       end)
+     )}
+  end
+
+  defp broadcast_npc(socket, mode, answer) do
+    # Broadcast the npc's response
     Phoenix.PubSub.broadcast(
       PubSub,
       @messages,
       {:messages,
        %{
-         "user_id" => socket.assigns.buddhist.id,
-         "username" => socket.assigns.buddhist.name,
+         "user_id" => socket.assigns.npcs[mode].character.id,
+         "username" => socket.assigns.npcs[mode].character.name,
          "content" => answer
        }}
     )
-
-    # Update the story in the socket
-    {:noreply, assign(socket, :story, story)}
   end
 
   @impl true
@@ -331,8 +455,8 @@ defmodule AppWeb.MainLive.Index do
     )
 
     # If the mode is "buddhist", send a message to the LiveView process for async handling
-    if mode == "buddhist" do
-      send(self(), {:chat_with_monk, content})
+    unless mode == "free" do
+      send(self(), {:chat_with_npc, mode, content})
     end
 
     {:noreply, socket}
