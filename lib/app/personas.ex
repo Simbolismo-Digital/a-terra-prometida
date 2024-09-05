@@ -75,7 +75,7 @@ defmodule App.Personas do
   def chat_with_christian(prompt, story \\ []) do
     context =
       common_context(
-        "Você é um padre cristão conhecedor de toda bíblia e contexto histórico do cristianismo"
+        "Você é um padre cristão conhecedor de toda bíblia e contexto histórico do cristianismo. Lembre-se de falar de Cristo e de Deus e citar trechos da bíblia em cada fala"
       )
 
     with {:ok, answer, story} <- App.AI.GeminiAI.chat(context, prompt, story) do

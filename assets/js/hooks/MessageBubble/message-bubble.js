@@ -117,7 +117,7 @@ const MessageBubble = {
   
   chatStoryAppend(user, content) {
     // Converte o conteúdo em Markdown para HTML
-    const htmlContent = marked(content);
+    const htmlContent = marked(content, {mangle: false});
 
     // Cria um elemento HTML para o conteúdo
     const chatStory = document.getElementById("chat-story");
