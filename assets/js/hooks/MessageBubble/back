@@ -7,6 +7,7 @@ const MessageBubble = {
     this.mode = document.getElementById("chat-mode").value;
     this.hf = new HfInference('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', {wait_for_model: true});
 
+    // Função para receber mensagens
     this.handleEvent("messages", (message) => {
       this.chatStoryAppend(message.username, message.content);
     })
@@ -117,36 +118,36 @@ const MessageBubble = {
   
   chatStoryAppend(user, content) {
     // Converte o conteúdo em Markdown para HTML
-    const htmlContent = marked(content);
+    const htmlContent = marked(content, {mangle: false});
 
     // Cria um elemento HTML para o conteúdo
     const chatStory = document.getElementById("chat-story");
-    const messageElement = document.createElement("div");
+    // const messageElement = document.createElement("div");
     messageElement.innerHTML = `<b>${user}:</b> ${htmlContent}`;
+    
+    // const audioButton = document.createElement("div");
+    // audioButton.addEventListener("click", () => {
+    //   console.log("cliquei");
+    // })
+    // audioButton.innerHTML = `
+    //   <button 
+    //     style="
+    //       background-color: #4CAF50; 
+    //       border: none; 
+    //       color: white; 
+    //       padding: 15px; 
+    //       text-align: center; 
+    //       text-decoration: none; 
+    //       display: inline-block; 
+    //       font-size: 16px; 
+    //       border-radius: 50%; 
+    //       cursor: pointer; 
+    //       transition: background-color 0.3s ease;">
+    //     <span style="font-size: 24px;">&#128266;</span>
+    //   </button>`;
+    // messageElement.appendChild(audioButton);
+
     chatStory.appendChild(messageElement);
-
-    const audioButton = document.createElement("button");
-
-    // Apply styles to the button
-    audioButton.style.backgroundColor = '#808080';
-    audioButton.style.border = 'none';
-    audioButton.style.color = 'white';
-    audioButton.style.padding = '15px';
-    audioButton.style.textAlign = 'center';
-    audioButton.style.textDecoration = 'none';
-    audioButton.style.display = 'inline-block';
-    audioButton.style.fontSize = '16px';
-    audioButton.style.borderRadius = '50%';
-    audioButton.style.cursor = 'pointer';
-    audioButton.style.transition = 'background-color 0.3s ease';
-
-    // Add the icon inside the button
-    audioButton.innerHTML = '<span style="font-size: 24px;">&#128266;</span>';
-
-    audioButton.addEventListener("click", () => {
-      this.textToSpeechMessageBubble(audioButton, content);
-    })
-    messageElement.appendChild(audioButton);
     
     // Rolar o scroll para o final ao adicionar uma nova mensagem
     // chatStory.scrollTop = chatStory.scrollHeight;
@@ -154,20 +155,16 @@ const MessageBubble = {
     this.showBubble();
   },
 
-  async textToSpeechMessageBubble(button, text) {
-    let speech = button.querySelector('audio');
-    if (!speech) {
-      speech = document.createElement('audio');
-      button.appendChild(speech);
-    }
-    if (!speech.src) {
-      const response = await this.hf.textToSpeech({model: 'facebook/mms-tts-por', inputs: text});
-      speech.src = URL.createObjectURL(response);
-      button.style.backgroundColor = '#4CAF50';
-    }
-    speech.play().catch(error => {
-      console.error('Erro ao tocar audio:', error);
-    });
+  textToSpeechMessageBubble(text) {
+    // const response = this.hf.textToSpeech({model: 'espnet/kan-bayashi_ljspeech_vits', inputs: '${text}'});
+    // const speech = document.getElementById('speech')
+    // if (!speech) {
+    //   speech = document.createElement('audio');
+    //   speech.id = 'speech';
+    //   document.body.appendChild(speech);
+    // }
+    // speech.src = URL.createObjectURL(response);
+    // speech.play();
   }
 };
 

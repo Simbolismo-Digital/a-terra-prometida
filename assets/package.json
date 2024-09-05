@@ -2,6 +2,7 @@
   "dependencies": {
     "grid-engine": "^2.31.0",
     "phaser": "^3.60.0",
-    "marked": "^5.0.2"
+    "marked": "^5.0.2",
+    "@huggingface/inference": "^2.8.0"
   }
 }
