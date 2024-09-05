@@ -52,7 +52,7 @@ defmodule AppWeb.MainLive.Index do
           <div
             id="chat-story"
             class="w-full overflow-y-auto mb-4 border border-gray-300 rounded p-2"
-            style="max-height: 150px; background-color: #f7f7f7; word-wrap: break-word;"
+            style="cursor: auto; max-height: 150px; background-color: #f7f7f7; word-wrap: break-word;"
           >
             <!-- Mensagens anteriores irão aparecer aqui -->
           </div>
@@ -238,6 +238,27 @@ defmodule AppWeb.MainLive.Index do
     {:noreply, push_event(socket, "messages", params)}
   end
 
+  # Lida com a mensagem async para processar o chat_with_monk
+  @impl true
+  def handle_info({:chat_with_monk, content}, socket) do
+    {:ok, answer, story} = App.Personas.chat_with_monk(content, socket.assigns.story)
+
+    # Broadcast the monk's response
+    Phoenix.PubSub.broadcast(
+      PubSub,
+      @messages,
+      {:messages,
+       %{
+         "user_id" => socket.assigns.buddhist.id,
+         "username" => socket.assigns.buddhist.name,
+         "content" => answer
+       }}
+    )
+
+    # Update the story in the socket
+    {:noreply, assign(socket, :story, story)}
+  end
+
   @impl true
   def handle_event("ready", _params, socket) do
     user_ids =
@@ -252,27 +273,6 @@ defmodule AppWeb.MainLive.Index do
     {:noreply,
      socket
      |> push_event("users", %{users: users})}
-  end
-
-  # Lida com a mensagem async para processar o chat_with_monk
-  @impl true
-  def handle_info({:chat_with_monk, content}, socket) do
-    {:ok, answer, story} = App.Personas.chat_with_monk(content, socket.assigns.story)
-
-    # Broadcast the monk's response
-    Phoenix.PubSub.broadcast(
-      PubSub,
-      @messages,
-      {:messages,
-      %{
-        "user_id" => socket.assigns.buddhist.id,
-        "username" => socket.assigns.buddhist.name,
-        "content" => answer
-      }}
-    )
-
-    # Update the story in the socket
-    {:noreply, assign(socket, :story, story)}
   end
 
   @impl true

@@ -1,3 +1,5 @@
+import { marked } from 'marked';
+
 const MessageBubble = {
   mounted() {
     this.shift = false;
@@ -58,6 +60,11 @@ const MessageBubble = {
     const bubble = document.getElementById("message-bubble");
 
     bubble.addEventListener("mousedown", (event) => {
+      // Verifica se o target é o elemento com id "chat-story" ou um de seus filhos
+      if (event.target.closest("#chat-story")) {
+        return; // Ignora a movimentação do balão
+      }
+
       const startX = event.clientX - bubble.offsetLeft;
       const startY = event.clientY - bubble.offsetTop;
 
@@ -107,9 +114,13 @@ const MessageBubble = {
   },
   
   chatStoryAppend(user, content) {
+    // Converte o conteúdo em Markdown para HTML
+    const htmlContent = marked(content);
+
+    // Cria um elemento HTML para o conteúdo
     const chatStory = document.getElementById("chat-story");
     const messageElement = document.createElement("div");
-    messageElement.innerHTML = `<b>${user}:</b> ${content}`;
+    messageElement.innerHTML = `<b>${user}:</b> ${htmlContent}`;
     chatStory.appendChild(messageElement);
     
     // Manter o scroll no final ao adicionar uma nova mensagem

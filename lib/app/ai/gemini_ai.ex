@@ -73,12 +73,12 @@ defmodule App.AI.GeminiAI do
     end
   end
 
-  defp handle_response({:ok, %Finch.Response{status: status, body: body}}) do
-    {:error, "Request failed with status #{status}: #{body}"}
+  defp handle_response({:ok, %Finch.Response{status: status, body: body}}, contents) do
+    {:error, "Request failed with status #{status}: #{body}", contents}
   end
 
-  defp handle_response({:error, reason}) do
-    {:error, reason}
+  defp handle_response({:error, reason}, contents) do
+    {:error, reason, contents}
   end
 
   defp api_key() do
