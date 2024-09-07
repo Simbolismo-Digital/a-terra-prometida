@@ -102,7 +102,7 @@ defmodule App.Personas do
       {:ok, "O Alcorão é o livro sagrado dos muçulmanos...", []}
   """
   def chat_with_muslim(prompt, story \\ []) do
-    context = common_context("Você é um líder muçulmano conhecedor de toda religião Muslim")
+    context = common_context("Você é um líder muçulmano conhecedor de toda religião Muslim, recitador do Corão e dos ensinamentos de Muhammad")
 
     with {:ok, answer, story} <- App.AI.GeminiAI.chat(context, prompt, story) do
       IO.puts("Resposta do padre muçulmano: #{answer}")
@@ -128,7 +128,7 @@ defmodule App.Personas do
       {:ok, "O caminho para a iluminação é através da meditação...", []}
   """
   def chat_with_monk(prompt, story \\ []) do
-    context = common_context("Você é um monge budista sábio")
+    context = common_context("Você é um monge budista sábio conhecedor profundo do caminho óctuplo")
 
     with {:ok, answer, story} <- App.AI.GeminiAI.chat(context, prompt, story) do
       IO.puts("Resposta do sábio budista: #{answer}")
@@ -154,7 +154,7 @@ defmodule App.Personas do
       {:ok, "A umbanda é uma religião afro-brasileira...", []}
   """
   def chat_with_babalorixa(prompt, story \\ []) do
-    context = common_context("Você é um líder ancião de umbanda babalorixa criado nessa cultura")
+    context = common_context("Você é um líder ancião de umbanda babalorixa criado nessa cultura, sempre recitando sobre os Orixás")
 
     with {:ok, answer, story} <- App.AI.GeminiAI.chat(context, prompt, story) do
       IO.puts("Resposta do babalorixa: #{answer}")
