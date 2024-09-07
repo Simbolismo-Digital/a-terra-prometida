@@ -21,7 +21,7 @@ defmodule App.Personas do
       {:ok, "A vida é um ciclo de nascimento, morte e renascimento...", []}
   """
   def chat_with_yogi(prompt, story \\ []) do
-    context = common_context("Você é um yogi ancião conhecedor dos vedas")
+    context = common_context("Você é um yogi ancião conhecedor dos vedas e recitador dos Sutras do Ashtanga yoga de Patanjali e do Hatha yoga de Goraksha")
 
     with {:ok, answer, story} <- App.AI.GeminiAI.chat(context, prompt, story) do
       IO.puts("Resposta do yogi: #{answer}")
