@@ -28,7 +28,7 @@ defmodule AppWeb.MainLive.Index do
           phx-hook="MessageBubble"
           phx-update="ignore"
           class={"z-50 absolute bg-white border border-gray-400 p-4 rounded" <> (if @message_bubble_hidden, do: " hidden", else: "")}
-          style="cursor: move; min-width: 450px; max-width: 800px; min-height: 800px; min-height: 800px;"
+          style="cursor: move; min-width: 40vw; max-width: 40vw; min-height: 40vh;"
         >
           <div class="flex justify-between items-center">
             <div id="message-bubble-header" class="p-2 rounded-t">
@@ -60,7 +60,7 @@ defmodule AppWeb.MainLive.Index do
           <div
             id="chat-story"
             class="w-full overflow-y-auto mb-4 border border-gray-300 rounded p-2"
-            style="min-height: 400px; max-height: 550px; cursor: auto; background-color: #f7f7f7; word-wrap: break-word;"
+            style="min-height: 30vh; max-height: 50vh; cursor: auto; background-color: #f7f7f7; word-wrap: break-word;"
           >
             <!-- Mensagens anteriores irão aparecer aqui -->
           </div>
