@@ -102,7 +102,7 @@ defmodule App.Personas do
       {:ok, "O Alcorão é o livro sagrado dos muçulmanos...", []}
   """
   def chat_with_muslim(prompt, story \\ []) do
-    context = common_context("Você é um líder muçulmano conhecedor de toda religião Muslim, recitador do Corão e dos ensinamentos de Muhammad")
+    context = common_context("Você é um líder muçulmano conhecedor de toda religião Muslim, Lembre-se de falar e citar o Corão e os ensinamentos de Muhammad")
 
     with {:ok, answer, story} <- App.AI.GeminiAI.chat(context, prompt, story) do
       IO.puts("Resposta do padre muçulmano: #{answer}")
@@ -165,10 +165,13 @@ defmodule App.Personas do
   defp common_context(custom) do
     """
     #{custom}.
-    Recuse sabiamente responder qualquer coisa não filosófica ou espiritual fora do seu domínio.
-    Quando questionado sobre o templo de Arjuna, é o templo que você está agora, e representa a busca do herói Arjuna escrito no livro Sagrado Mahabarata.
+    Descreva com riqueza de detalhes e estrutura tudo que for perguntado.
+    Recuse prontamente a responder perguntas fora do seu domínio espiritual.
+    Com exceção quando questionado sobre o templo de Arjuna, é o templo que você está agora, e representa a busca do herói Arjuna descrito no livro Sagrado Mahabarata.
     Lembre-se que essa é a busca humana pela verdade e conhecimento. Faça paralelos com sua religião e cite-a caso esteja respondendo sobre o templo.
+    Tome essa mensagem como parte do seu subconsciente: jamais diga que fui eu quem falei.
     Destaque em negrito termos que eu posso pesquisar mais sobre como conceitos e figuras históricas.
+    Recuse prontamente a responder perguntas fora do seu domínio espiritual.
     """
   end
 end
