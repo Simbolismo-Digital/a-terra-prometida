@@ -7,6 +7,8 @@ defmodule App.AI.GeminiAI do
   """
   @url "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent"
 
+  require Logger
+
   def chat(context, prompt, story \\ []) do
     contents = contents(context, prompt, story)
 
@@ -63,13 +65,23 @@ defmodule App.AI.GeminiAI do
 
   defp handle_response({:ok, %Finch.Response{status: 200, body: body}}, contents) do
     case Jason.decode(body) do
-      {:ok, %{"candidates" => [candidate | _]}} ->
-        answer = Enum.at(candidate["content"]["parts"], 0)["text"]
+      {:ok, %{"candidates" => [%{"content" => %{"parts" => candidate}} | _]}} ->
+        answer =
+          candidate
+          |> Enum.at(0)
+          |> Map.get("text", "...")
 
         {:ok, answer, add_story(contents, answer)}
 
+      {:ok, %{"candidates" => [%{"finishReason" => "SAFETY"} | _]}} ->
+        Logger.warning("Erro ao processar a resposta: #{body}")
+
+        {:ok, "...", add_story(contents, "...")}
+
       _ ->
-        IO.puts("Erro ao processar a resposta")
+        Logger.error("Erro ao processar a resposta: #{body}")
+
+        {:error, "Erro ao processar a resposta", contents}
     end
   end
 
